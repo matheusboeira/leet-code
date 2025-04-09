@@ -8,11 +8,11 @@ if (!folder) {
   Logger.process([
     {
       level: 'error',
-      message: 'X Missing folder argument'
+      message: 'X No argument provided.'
     },
     {
       level: 'info',
-      message: "> Enter 'npm dev 1' to execute the 'two-sum' script (folder 1)"
+      message: "> Type 'npm dev 1' to run the 'two-sum' script (folder 1)."
     }
   ])
   process.exit(0)
@@ -26,7 +26,7 @@ try {
   tsFile = files.find((file) => file.endsWith('.ts'))
 
   if (!tsFile) {
-    Logger.error(`X Missing *.ts file on src/${folder}`)
+    Logger.error(`X Missing *.ts file in src/${folder}`)
     process.exit(1)
   }
 } catch {
@@ -41,8 +41,8 @@ if (!fs.existsSync(filePath)) {
   process.exit(0)
 }
 
-Logger.success(`✅ Executing ${filePath}\n`)
+Logger.success(`✅ Running ${filePath}\n`)
 
 import(filePath).catch((err) => {
-  Logger.error(`X Error to import ${filePath}: ${JSON.stringify(err)}`)
+  Logger.error(`X Failed to load ${filePath}: ${JSON.stringify(err)}`)
 })
