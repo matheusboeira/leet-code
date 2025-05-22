@@ -1,23 +1,38 @@
 import { Logger } from './terminal-colors'
+import { isEqual } from 'lodash'
 
-type ProcessResult = {
-  active: number | 'all'
-  callbacks: ReadonlyArray<() => void>
+type Result = {
+  result: unknown
+  expected: unknown
 }
 
-const process = ({ active, callbacks }: ProcessResult) => {
-  const callback = callbacks?.[active]
+type ProcessResult = {
+  tests: ReadonlyArray<Result>
+}
 
-  if (active === 'all') {
-    for (const callback of callbacks) callback()
+const isCorrect = (result: unknown, expected: unknown, index: number) => {
+  if (isEqual(result, expected)) {
+    Logger.success(`[${index}] ✓ Test passed.`)
     return
   }
 
-  if (!callback) {
-    Logger.error('X Callback não encontrada.')
+  Logger.error(
+    `[${index}] X Incorrect result. ${JSON.stringify({
+      result,
+      expected
+    })}`
+  )
+}
+
+const process = ({ tests }: ProcessResult) => {
+  if (!tests.length) {
+    Logger.error('X Tests not found.')
     return
   }
-  return callback()
+
+  for (let i = 0; i < tests.length; i++) {
+    isCorrect(tests[i].result, tests[i].expected, i)
+  }
 }
 
 export const Result = {
